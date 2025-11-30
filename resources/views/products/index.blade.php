@@ -1,181 +1,126 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Product - WMS')
+@section('title', 'Inventory - WMS')
 
 @section('content')
-<div class="container mt-4 mb-4">
+<div class="container mt-4 mb-5">
 
-  <div class="mb-4">
-    <a href="{{ route('products.index') }}" class="btn btn-secondary">
-      <i class="fa-solid fa-arrow-left me-2"></i>Back to Inventory
-    </a>
-  </div>
+  <h3 class="mb-4 fw-bold">Inventory List</h3>
 
-  <h3 class="mb-4 fw-bold">
-    <i class="fa-solid fa-pen-to-square me-2"></i>Edit Product: {{ $product->name }}
-  </h3>
-
-  @if($errors->any())
-  <div class="alert alert-danger alert-dismissible fade show" role="alert">
-    <strong>Oops!</strong> Please fix the following errors:
-    <ul class="mb-0 mt-2">
-      @foreach($errors->all() as $error)
-        <li>{{ $error }}</li>
-      @endforeach
-    </ul>
+  <!-- SUCCESS MESSAGE -->
+  @if(session('success'))
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="fa-solid fa-circle-check me-2"></i>{{ session('success') }}
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
   </div>
   @endif
 
-  <div class="bg-white rounded shadow-sm p-4">
-    <form action="{{ route('products.update', $product) }}" method="POST">
-      @csrf
-      @method('PUT')
+  <div class="mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <!-- SEARCH BAR -->
+    <div class="input-group shadow-sm" style="max-width: 500px;">
+      <span class="input-group-text bg-dark text-white">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </span>
+      <input
+        type="text"
+        id="searchInput"
+        class="form-control"
+        placeholder="Search inventory (SKU, name, location)...">
+    </div>
 
-      <div class="row g-3">
-
-        <!-- SKU -->
-        <div class="col-md-6">
-          <label class="form-label fw-bold">
-            <i class="fa-solid fa-barcode me-1"></i>SKU
-            <span class="text-danger">*</span>
-          </label>
-          <input
-            type="text"
-            name="sku"
-            class="form-control @error('sku') is-invalid @enderror"
-            placeholder="e.g., P001"
-            value="{{ old('sku', $product->sku) }}"
-            required>
-          @error('sku')
-            <div class="invalid-feedback">{{ $message }}</div>
-          @enderror
-          <small class="text-muted">Stock Keeping Unit - must be unique</small>
-        </div>
-
-        <!-- Product Name -->
-        <div class="col-md-6">
-          <label class="form-label fw-bold">
-            <i class="fa-solid fa-tag me-1"></i>Product Name
-            <span class="text-danger">*</span>
-          </label>
-          <input
-            type="text"
-            name="name"
-            class="form-control @error('name') is-invalid @enderror"
-            placeholder="e.g., Laptop Asus"
-            value="{{ old('name', $product->name) }}"
-            required>
-          @error('name')
-            <div class="invalid-feedback">{{ $message }}</div>
-          @enderror
-        </div>
-
-        <!-- Stock Quantity -->
-        <div class="col-md-6">
-          <label class="form-label fw-bold">
-            <i class="fa-solid fa-boxes-stacked me-1"></i>Stock Quantity
-            <span class="text-danger">*</span>
-          </label>
-          <input
-            type="number"
-            name="stock"
-            class="form-control @error('stock') is-invalid @enderror"
-            placeholder="e.g., 150"
-            value="{{ old('stock', $product->stock) }}"
-            min="0"
-            required>
-          @error('stock')
-            <div class="invalid-feedback">{{ $message }}</div>
-          @enderror
-          <small class="text-muted">Current: {{ $product->stock }} units</small>
-        </div>
-
-        <!-- Location -->
-        <div class="col-md-6">
-          <label class="form-label fw-bold">
-            <i class="fa-solid fa-location-dot me-1"></i>Rack Location
-          </label>
-          <select name="location" class="form-select @error('location') is-invalid @enderror">
-            <option value="">-- Select Location --</option>
-            <option value="A-01" {{ old('location', $product->location) == 'A-01' ? 'selected' : '' }}>A-01</option>
-            <option value="A-02" {{ old('location', $product->location) == 'A-02' ? 'selected' : '' }}>A-02</option>
-            <option value="A-03" {{ old('location', $product->location) == 'A-03' ? 'selected' : '' }}>A-03</option>
-            <option value="B-05" {{ old('location', $product->location) == 'B-05' ? 'selected' : '' }}>B-05</option>
-            <option value="B-06" {{ old('location', $product->location) == 'B-06' ? 'selected' : '' }}>B-06</option>
-            <option value="C-01" {{ old('location', $product->location) == 'C-01' ? 'selected' : '' }}>C-01</option>
-            <option value="C-02" {{ old('location', $product->location) == 'C-02' ? 'selected' : '' }}>C-02</option>
-          </select>
-          @error('location')
-            <div class="invalid-feedback">{{ $message }}</div>
-          @enderror
-        </div>
-
-        <!-- Description -->
-        <div class="col-12">
-          <label class="form-label fw-bold">
-            <i class="fa-solid fa-align-left me-1"></i>Description
-            <span class="text-muted">(Optional)</span>
-          </label>
-          <textarea
-            name="description"
-            class="form-control @error('description') is-invalid @enderror"
-            rows="3"
-            placeholder="Enter product description...">{{ old('description', $product->description) }}</textarea>
-          @error('description')
-            <div class="invalid-feedback">{{ $message }}</div>
-          @enderror
-        </div>
-
-        <!-- Meta Info -->
-        <div class="col-12">
-          <div class="alert alert-info">
-            <small>
-              <i class="fa-solid fa-clock me-1"></i>
-              <strong>Created:</strong> {{ $product->created_at->format('d M Y, H:i') }} |
-              <strong>Last Updated:</strong> {{ $product->updated_at->format('d M Y, H:i') }}
-            </small>
-          </div>
-        </div>
-
-        <!-- Submit Button -->
-        <div class="col-12 mt-4">
-          <button type="submit" class="btn btn-warning px-4">
-            <i class="fa-solid fa-save me-2"></i>Update Product
-          </button>
-          <a href="{{ route('products.index') }}" class="btn btn-secondary px-4 ms-2">
-            <i class="fa-solid fa-times me-2"></i>Cancel
-          </a>
-          <button type="button"
-                  class="btn btn-danger px-4 float-end"
-                  onclick="deleteProduct()">
-            <i class="fa-solid fa-trash me-2"></i>Delete Product
-          </button>
-        </div>
-
-      </div>
-    </form>
-
-    <!-- Hidden Delete Form -->
-    <form id="delete-product-form"
-          action="{{ route('products.destroy', $product) }}"
-          method="POST"
-          style="display: none;">
-      @csrf
-      @method('DELETE')
-    </form>
-
+    <a href="{{ route('products.create') }}" class="btn btn-primary">
+      <i class="fa-solid fa-plus me-2"></i>Add New Product
+    </a>
   </div>
 
+  <!-- INVENTORY TABLE -->
+  <div class="table-responsive bg-white rounded shadow-sm p-3">
+    <table class="table table-striped table-hover mb-0" id="inventoryTable">
+      <thead class="table-dark">
+        <tr>
+          <th class="text-center"><i class="fa-solid fa-barcode me-2"></i>SKU</th>
+          <th class="text-center"><i class="fa-solid fa-box me-2"></i>Product Name</th>
+          <th class="text-center"><i class="fa-solid fa-location-dot me-2"></i>Location</th>
+          <th class="text-center"><i class="fa-solid fa-chart-column me-2"></i>Stock Quantity</th>
+          <th class="text-center"><i class="fa-solid fa-gear me-2"></i>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @forelse($products as $product)
+        <tr>
+          <td class="text-center">{{ $product->sku }}</td>
+          <td class="text-center">{{ $product->name }}</td>
+          <td class="text-center">{{ $product->location ?? 'N/A' }}</td>
+          <td class="text-center">
+            <span class="badge {{ $product->stock < 50 ? 'bg-danger' : 'bg-success' }}">
+              {{ $product->stock }}
+            </span>
+          </td>
+          <td class="text-center">
+            <div class="btn-group" role="group">
+              <a href="{{ route('products.edit', $product) }}"
+                 class="btn btn-sm btn-warning"
+                 title="Edit Product">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </a>
+              <button type="button"
+                      class="btn btn-sm btn-danger"
+                      onclick="deleteProduct({{ $product->id }}, '{{ $product->name }}')"
+                      title="Delete Product">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+            <form id="delete-form-{{ $product->id }}"
+                  action="{{ route('products.destroy', $product) }}"
+                  method="POST"
+                  style="display: none;">
+              @csrf
+              @method('DELETE')
+            </form>
+          </td>
+        </tr>
+        @empty
+        <tr>
+          <td colspan="5" class="text-center text-muted py-4">
+            <i class="fa-solid fa-box-open fa-3x mb-3 d-block" style="opacity: 0.3;"></i>
+            No products found. <a href="{{ route('products.create') }}">Add your first product</a>
+          </td>
+        </tr>
+        @endforelse
+      </tbody>
+    </table>
+  </div>
+
+  @if($products->count() > 0)
+  <div class="mt-3 text-muted">
+    <small>
+      <i class="fa-solid fa-info-circle me-1"></i>
+      Showing {{ $products->count() }} product(s)
+    </small>
+  </div>
+  @endif
+
 </div>
+@endsection
 
 @push('scripts')
 <script>
-function deleteProduct() {
-  if (confirm('Are you sure you want to delete this product? This action cannot be undone!')) {
-    document.getElementById('delete-product-form').submit();
+  // SEARCH FUNCTION
+  document.getElementById('searchInput').addEventListener('keyup', function() {
+    const query = this.value.toLowerCase();
+    const rows = document.querySelectorAll('#inventoryTable tbody tr');
+
+    rows.forEach(row => {
+      const text = row.innerText.toLowerCase();
+      row.style.display = text.includes(query) ? '' : 'none';
+    });
+  });
+
+  // DELETE FUNCTION
+  function deleteProduct(id, name) {
+    if (confirm('Are you sure you want to delete "' + name + '"?')) {
+      document.getElementById('delete-form-' + id).submit();
+    }
   }
-}
 </script>
 @endpush
-@endsection
