@@ -1,0 +1,114 @@
+@extends('layouts.app')
+
+@section('title', 'Edit Outbound Transaction')
+
+@section('content')
+<div class="container mt-4 mb-4">
+
+  <div class="mb-4">
+    <a href="{{ route('outbound.index') }}" class="btn btn-secondary">
+      <i class="fa-solid fa-arrow-left me-2"></i>Back to Outbound
+    </a>
+  </div>
+
+  <h3 class="mb-4 fw-bold">
+    <i class="fa-solid fa-pen-to-square me-2"></i>Edit Outbound Transaction
+  </h3>
+
+  @if($errors->any())
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>Error!</strong>
+    <ul class="mb-0 mt-2">
+      @foreach($errors->all() as $error)
+        <li>{{ $error }}</li>
+      @endforeach
+    </ul>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  @endif
+
+  <div class="bg-white rounded shadow-sm p-4">
+    <form action="{{ route('outbound.update', $transaction->id) }}" method="POST">
+      @csrf
+      @method('PUT')
+
+      <div class="row g-3">
+
+        <div class="col-md-6">
+          <label class="form-label fw-bold">SKU</label>
+          <input type="text" class="form-control" value="{{ $transaction->sku }}" disabled>
+          <small class="text-muted">Cannot be changed</small>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label fw-bold">Product Name</label>
+          <input type="text" class="form-control" value="{{ $transaction->product_name }}" disabled>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label fw-bold">Quantity <span class="text-danger">*</span></label>
+          <input
+            type="number"
+            name="quantity"
+            class="form-control"
+            value="{{ old('quantity', $transaction->quantity) }}"
+            min="1"
+            required>
+          <small class="text-muted">Original: {{ $transaction->quantity }}</small>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label fw-bold">Destination <span class="text-danger">*</span></label>
+          <input
+            type="text"
+            name="destination"
+            class="form-control"
+            value="{{ old('destination', $transaction->destination) }}"
+            required>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label fw-bold">Dispatch Type <span class="text-danger">*</span></label>
+          <select name="dispatch_type" class="form-select" required>
+            <option value="">-- Select --</option>
+            <option value="Delivery" {{ old('dispatch_type', $transaction->dispatch_type) == 'Delivery' ? 'selected' : '' }}>Delivery</option>
+            <option value="Pickup" {{ old('dispatch_type', $transaction->dispatch_type) == 'Pickup' ? 'selected' : '' }}>Pickup</option>
+            <option value="Transfer" {{ old('dispatch_type', $transaction->dispatch_type) == 'Transfer' ? 'selected' : '' }}>Transfer</option>
+          </select>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label fw-bold">Notes</label>
+          <input
+            type="text"
+            name="notes"
+            class="form-control"
+            value="{{ old('notes', $transaction->notes) }}"
+            placeholder="Optional notes">
+        </div>
+
+        <div class="col-12">
+          <div class="alert alert-info">
+            <small>
+              <i class="fa-solid fa-info-circle me-1"></i>
+              <strong>Created:</strong> {{ $transaction->created_at->format('d M Y, H:i') }} |
+              <strong>Current Stock:</strong> {{ $transaction->product->stock }} units
+            </small>
+          </div>
+        </div>
+
+        <div class="col-12 mt-4">
+          <button type="submit" class="btn btn-warning px-4">
+            <i class="fa-solid fa-save me-2"></i>Update Transaction
+          </button>
+          <a href="{{ route('outbound.index') }}" class="btn btn-secondary px-4 ms-2">
+            <i class="fa-solid fa-times me-2"></i>Cancel
+          </a>
+        </div>
+
+      </div>
+    </form>
+  </div>
+
+</div>
+@endsection
