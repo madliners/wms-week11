@@ -1,6 +1,6 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-Tugas Perancangan Aplikasi Dinamis - Week 11
+Tugas Perancangan Aplikasi Dinamis - Week 11 <br>
 Pamela Rizqi Maharani 1201220060
 
 ## License
