@@ -35,7 +35,7 @@ class ProductController extends Controller
             'name' => $request->name,
             'stock' => $request->stock,
             'location' => $request->location,
-            'description' => $request->description, // ✅ ADDED
+            'description' => $request->description,
         ]);
 
         return redirect()->route('products.index')
@@ -70,7 +70,7 @@ class ProductController extends Controller
             'name' => $request->name,
             'stock' => $request->stock,
             'location' => $request->location,
-            'description' => $request->description, // ✅ ADDED
+            'description' => $request->description,
         ]);
 
         return redirect()->route('products.index')
