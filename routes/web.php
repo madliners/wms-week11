@@ -19,14 +19,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Products (Inventory)
     Route::resource('products', ProductController::class);
 
-    // Inbound
+    // Inbound - FULL CRUD
     Route::get('/inbound', [InboundController::class, 'index'])->name('inbound.index');
     Route::post('/inbound', [InboundController::class, 'store'])->name('inbound.store');
     Route::get('/inbound/{id}/edit', [InboundController::class, 'edit'])->name('inbound.edit');
     Route::put('/inbound/{id}', [InboundController::class, 'update'])->name('inbound.update');
     Route::delete('/inbound/{id}', [InboundController::class, 'destroy'])->name('inbound.destroy');
 
-    // Outbound
+    // Outbound - FULL CRUD
     Route::get('/outbound', [OutboundController::class, 'index'])->name('outbound.index');
     Route::post('/outbound', [OutboundController::class, 'store'])->name('outbound.store');
     Route::get('/outbound/{id}/edit', [OutboundController::class, 'edit'])->name('outbound.edit');
@@ -40,4 +40,5 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+// AUTHENTICATION ROUTES (dari Breeze)
+require __DIR__ . '/auth.php';
