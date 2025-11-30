@@ -5,6 +5,7 @@
 @section('content')
 <div class="container mt-4 mb-4">
 
+  {{-- Back Button --}}
   <div class="mb-4">
     <a href="{{ route('products.index') }}" class="btn btn-secondary">
       <i class="fa-solid fa-arrow-left me-2"></i>Back to Inventory
@@ -15,26 +16,29 @@
     <i class="fa-solid fa-pen-to-square me-2"></i>Edit Product: {{ $product->name }}
   </h3>
 
+  {{-- Validation Errors --}}
   @if($errors->any())
-  <div class="alert alert-danger alert-dismissible fade show" role="alert">
-    <strong>Oops!</strong> Please fix the following errors:
-    <ul class="mb-0 mt-2">
-      @foreach($errors->all() as $error)
-        <li>{{ $error }}</li>
-      @endforeach
-    </ul>
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-  </div>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <strong>Oops!</strong> Please fix the following errors:
+      <ul class="mb-0 mt-2">
+        @foreach($errors->all() as $error)
+          <li>{{ $error }}</li>
+        @endforeach
+      </ul>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
   @endif
 
   <div class="bg-white rounded shadow-sm p-4">
+
+    {{-- FORM UPDATE PRODUCT --}}
     <form action="{{ route('products.update', $product) }}" method="POST">
       @csrf
       @method('PUT')
 
       <div class="row g-3">
 
-        <!-- SKU -->
+        {{-- SKU --}}
         <div class="col-md-6">
           <label class="form-label fw-bold">
             <i class="fa-solid fa-barcode me-1"></i>SKU
@@ -53,7 +57,7 @@
           <small class="text-muted">Stock Keeping Unit - must be unique</small>
         </div>
 
-        <!-- Product Name -->
+        {{-- Product Name --}}
         <div class="col-md-6">
           <label class="form-label fw-bold">
             <i class="fa-solid fa-tag me-1"></i>Product Name
@@ -71,7 +75,7 @@
           @enderror
         </div>
 
-        <!-- Stock Quantity -->
+        {{-- Stock Quantity --}}
         <div class="col-md-6">
           <label class="form-label fw-bold">
             <i class="fa-solid fa-boxes-stacked me-1"></i>Stock Quantity
@@ -91,7 +95,7 @@
           <small class="text-muted">Current: {{ $product->stock }} units</small>
         </div>
 
-        <!-- Location -->
+        {{-- Rack Location --}}
         <div class="col-md-6">
           <label class="form-label fw-bold">
             <i class="fa-solid fa-location-dot me-1"></i>Rack Location
@@ -111,7 +115,7 @@
           @enderror
         </div>
 
-        <!-- Description -->
+        {{-- Description --}}
         <div class="col-12">
           <label class="form-label fw-bold">
             <i class="fa-solid fa-align-left me-1"></i>Description
@@ -127,7 +131,7 @@
           @enderror
         </div>
 
-        <!-- Meta Info -->
+        {{-- Meta Info --}}
         <div class="col-12">
           <div class="alert alert-info">
             <small>
@@ -138,28 +142,35 @@
           </div>
         </div>
 
-        <!-- Submit Button -->
-        <div class="col-12 mt-4">
-          <button type="submit" class="btn btn-warning px-4">
-            <i class="fa-solid fa-save me-2"></i>Update Product
-          </button>
-          <a href="{{ route('products.index') }}" class="btn btn-secondary px-4 ms-2">
-            <i class="fa-solid fa-times me-2"></i>Cancel
-          </a>
-          <form action="{{ route('products.destroy', $product) }}"
-                method="POST"
-                class="d-inline float-end"
-                onsubmit="return confirm('Are you sure you want to delete this product?');">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="btn btn-danger px-4">
-              <i class="fa-solid fa-trash me-2"></i>Delete Product
+        {{-- Buttons: Update + Cancel (ONLY for update form) --}}
+        <div class="col-12 mt-4 d-flex justify-content-between align-items-center">
+          <div>
+            <button type="submit" class="btn btn-warning px-4">
+              <i class="fa-solid fa-save me-2"></i>Update Product
             </button>
-          </form>
+            <a href="{{ route('products.index') }}" class="btn btn-secondary px-4 ms-2">
+              <i class="fa-solid fa-times me-2"></i>Cancel
+            </a>
+          </div>
         </div>
 
       </div>
     </form>
+
+    {{-- FORM DELETE PRODUCT (TERPISAH, TIDAK DI DALAM FORM UPDATE) --}}
+    <div class="mt-3 text-end">
+      <form action="{{ route('products.destroy', $product) }}"
+            method="POST"
+            class="d-inline"
+            onsubmit="return confirm('Are you sure you want to delete this product?');">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn btn-danger px-4">
+          <i class="fa-solid fa-trash me-2"></i>Delete Product
+        </button>
+      </form>
+    </div>
+
   </div>
 
 </div>
