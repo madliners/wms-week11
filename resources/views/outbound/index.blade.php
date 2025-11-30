@@ -146,20 +146,25 @@
             <small>{{ $transaction->created_at->format('d M Y, H:i') }}</small>
           </td>
           <td class="text-center">
-            <a href="{{ route('outbound.edit', $transaction->id) }}"
-               class="btn btn-sm btn-warning"
-               title="Edit">
-              <i class="fa-solid fa-pen-to-square"></i>
-            </a>
-            <form action="{{ route('outbound.destroy', $transaction->id) }}"
-                  method="POST"
-                  class="d-inline"
-                  onsubmit="return confirm('Delete this transaction? Stock will be restored.');">
-              @csrf
-              @method('DELETE')
-              <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+            <div class="btn-group" role="group">
+              <a href="{{ route('outbound.edit', $transaction->id) }}"
+                 class="btn btn-sm btn-warning"
+                 title="Edit">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </a>
+              <button type="button"
+                      class="btn btn-sm btn-danger"
+                      onclick="deleteTransaction({{ $transaction->id }})"
+                      title="Delete">
                 <i class="fa-solid fa-trash"></i>
               </button>
+            </div>
+            <form id="delete-outbound-{{ $transaction->id }}"
+                  action="{{ route('outbound.destroy', $transaction->id) }}"
+                  method="POST"
+                  style="display: none;">
+              @csrf
+              @method('DELETE')
             </form>
           </td>
         </tr>
@@ -211,4 +216,14 @@
   </div>
 
 </div>
+
+@push('scripts')
+<script>
+function deleteTransaction(id) {
+  if (confirm('Delete this transaction? Stock will be restored automatically.')) {
+    document.getElementById('delete-outbound-' + id).submit();
+  }
+}
+</script>
+@endpush
 @endsection
